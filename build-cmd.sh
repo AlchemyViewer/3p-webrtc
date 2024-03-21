@@ -34,6 +34,11 @@ case "$AUTOBUILD_PLATFORM" in
         python run.py package windows_x86_64 --debug --source-dir 'C:\webrtc' --build-dir 'C:\webrtc-build'
         package_path="${top}/build/_package/windows_x86_64/webrtc.tar.bz2"
     ;;
+    darwin*)
+        python3 run.py build macos_x86_64 --webrtc-fetch --commit m114_release
+        python3 run.py package macos_x86_64
+        package_path="${top}/build/_package/macos_x86_64/webrtc.tar.bz2"
+    ;;
     linux*)
         python3 run.py build ubuntu-22.04_x86_64 --commit m114_release
         python3 run.py package ubuntu-22.04_x86_64
