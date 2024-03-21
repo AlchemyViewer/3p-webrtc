@@ -30,7 +30,8 @@ source_environment_tempfile="$stage/source_environment.sh"
 pushd "build"
 case "$AUTOBUILD_PLATFORM" in
     windows*)
-        pwsh -NonInteractive -File ./build.windows_x86_64.ps1 m114_release
+        python run.py build windows_x86_64 --debug --source-dir 'C:\webrtc' --build-dir 'C:\webrtc-build' --commit m114_release
+        python run.py package windows_x86_64 --debug --source-dir 'C:\webrtc' --build-dir 'C:\webrtc-build'
         package_path="${top}/build/_package/windows_x86_64/webrtc.tar.bz2"
     ;;
     linux*)
