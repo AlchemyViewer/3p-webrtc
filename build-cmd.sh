@@ -34,7 +34,8 @@ case "$AUTOBUILD_PLATFORM" in
         package_path="${top}/build/_package/windows_x86_64/webrtc.tar.bz2"
     ;;
     linux*)
-        bash build.ubuntu-22.04_x86_64.sh
+        python3 run.py build ubuntu-22.04_x86_64 --commit m114_release
+        python3 run.py package ubuntu-22.04_x86_64
         package_path="${top}/build/_package/ubuntu-22.04_x86_64/webrtc.tar.bz2"
     ;;
     *)
@@ -53,13 +54,13 @@ rm webrtc.tar.bz2
 
 # Munge the WebRTC Build package contents into something compatible
 # with the layout we use for other autobuild pacakges
-mv include webrtc
-mkdir include
+mv include/ webrtc/
+mkdir -p include
 mv webrtc include
-mv lib release
-mkdir lib
-mv release lib
-mkdir LICENSES
+mv lib/ release/
+mkdir -p lib
+mv release/ lib/
+mkdir -p LICENSES
 mv NOTICE LICENSES/webrtc-license.txt
 
 case "$AUTOBUILD_PLATFORM" in

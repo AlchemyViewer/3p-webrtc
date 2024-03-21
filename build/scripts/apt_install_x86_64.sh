@@ -8,7 +8,7 @@ apt-get -y upgrade
 # tzdata を noninteractive にしないと実行が止まってしまう
 # need to set tzdata to noninteractive or else it'll stop
 apt-get -y install tzdata
-echo 'Asia/Tokyo' > /etc/timezone
+echo 'America/New_York' > /etc/timezone
 dpkg-reconfigure -f noninteractive tzdata
 
 export DEBIAN_FRONTEND=noninteractive
