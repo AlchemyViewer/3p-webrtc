@@ -17,12 +17,19 @@
       <map>
         <key>common</key>
         <map>
+          <key>build_directory</key>
+          <string>stage</string>
           <key>configurations</key>
           <map>
             <key>default</key>
             <map>
               <key>build</key>
               <map>
+                <key>arguments</key>
+                <array>
+                  <string>-c</string>
+                  <string>../build-cmd.sh</string>
+                </array>
                 <key>command</key>
                 <string>bash</string>
               </map>

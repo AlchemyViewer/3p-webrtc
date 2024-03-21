@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 cd "$(dirname "$0")"
-artifact_id="$1"
 
 # turn on verbose debugging output for logs.
 exec 4>&1; export BASH_XTRACEFD=4; set -x
@@ -12,55 +11,44 @@ set -e
 # bleat on references to undefined shell variables
 set -u
 
-# Suddenly, Cygwin inserts extra CRLFs in places such
-# as the code that extracts version numbers so we need
-# this command to stop it doing that...
-[[ "$OSTYPE" == "cygwin" ]] && set -o igncr
-
 top="$(pwd)"
 stage="${top}"/stage
 
+# load autobuild provided shell functions and variables
 case "$AUTOBUILD_PLATFORM" in
-    windows64)
+    windows*)
         autobuild="$(cygpath -u "$AUTOBUILD")"
-        build_type="windows_x86_64"
-    ;;
-    darwin64)
-        build_type="macos_x86_64"
-        autobuild="$AUTOBUILD"
-    ;;
-    linux*)
-        build_type="linux_x86_64"
-        autobuild="$AUTOBUILD"
     ;;
     *)
-        echo "This project is not currently supported for $AUTOBUILD_PLATFORM" 1>&2 ; exit 1
-        
+        autobuild="$AUTOBUILD"
     ;;
 esac
-
 source_environment_tempfile="$stage/source_environment.sh"
 "$autobuild" source_environment > "$source_environment_tempfile"
 . "$source_environment_tempfile"
 
+pushd "build"
+case "$AUTOBUILD_PLATFORM" in
+    windows*)
+        pwsh -NonInteractive -File ./build.windows_x86_64.ps1 m114_release
+        package_path="${top}/build/_package/windows_x86_64/webrtc.tar.bz2"
+    ;;
+    linux*)
+        bash build.ubuntu-22.04_x86_64.sh
+        package_path="${top}/build/_package/ubuntu-22.04_x86_64/webrtc.tar.bz2"
+    ;;
+    *)
+        autobuild="$AUTOBUILD"
+    ;;
+esac
+popd
+
 pushd "$stage"
 
 # download the artifact
-curl -o webrtc.tar.bz2.zip -L -H "Accept: application/vnd.github+json" \
-                              -H "X-GitHub-Api-Version: 2022-11-28" \
-                              -H "Authorization: Bearer $AUTOBUILD_GITHUB_TOKEN" \
-                              https://api.github.com/repos/secondlife/3p-webrtc-build/actions/artifacts/"$artifact_id"/zip
+cp "${package_path}" .
 
-# delete it so autobuild upload doesn't assume it's a bad autobuild artifact
-# TODO: Find a better way to do this that doesn't involve a 3rd party action
-#curl -X DELETE -H "Accept: application/vnd.github+json" \
-#               -H "X-GitHub-Api-Version: 2022-11-28" \
-#               -H "Authorization: Bearer $AUTOBUILD_GITHUB_TOKEN" \
-#               https://api.github.com/repos/secondlife/3p-webrtc-build/actions/artifacts/"$artifact_id"
-
-unzip webrtc.tar.bz2.zip
 tar xjf webrtc.tar.bz2 --strip-components=1
-rm webrtc.tar.bz2.zip
 rm webrtc.tar.bz2
 
 # Munge the WebRTC Build package contents into something compatible
@@ -81,6 +69,6 @@ case "$AUTOBUILD_PLATFORM" in
 esac
 
 build=${AUTOBUILD_BUILD_ID:=0}
-echo "${GITHUB_REF:10}.${build}" > "VERSION.txt"
+echo "114.5735.08.${build}" > "VERSION.txt"
 popd
 
