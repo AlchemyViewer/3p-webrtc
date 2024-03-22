@@ -421,6 +421,7 @@ COMMON_GN_ARGS = [
     "use_rtti=true",
     'rtc_build_tools=false',
     "rtc_enable_protobuf=false",
+    "treat_warnings_as_errors=false",
 ]
 
 WEBRTC_BUILD_TARGETS_MACOS_COMMON = [
@@ -442,7 +443,7 @@ WEBRTC_BUILD_TARGETS = {
 
 def get_build_targets(target):
     ts = [':default']
-    if target not in ('windows_x86_64', 'windows_x86', 'windows_arm64', 'ios', 'macos_x86_64', 'macos_arm64'):
+    if target not in ('windows_x86_64', 'windows_x86', 'windows_arm64', 'ios', 'macos_x86_64', 'macos_arm64', 'ubuntu-18.04_x86_64', 'ubuntu-20.04_x86_64', 'ubuntu-22.04_x86_64'):
         ts += ['buildtools/third_party/libc++']
     ts += WEBRTC_BUILD_TARGETS.get(target, [])
     return ts
@@ -744,6 +745,8 @@ def build_webrtc(
             gn_args += [
                 'target_os="linux"',
                 'rtc_use_pipewire=false',
+                "use_custom_libcxx=false",
+                "use_custom_libcxx_for_host=false",
             ]
         else:
             raise Exception(f'Target {target} is not supported')
