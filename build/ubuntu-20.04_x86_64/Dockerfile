@@ -16,8 +16,8 @@ RUN /root/scripts/apt_install_x86_64.sh
 ENV LC_ALL=C.UTF-8
 RUN cd /root && python3 run.py build $PACKAGE_NAME --commit "${COMMIT_HASH}"
 RUN cd /root && python3 run.py package $PACKAGE_NAME
-RUN mv $PACKAGE_DIR/webrtc.tar.gz /
+RUN mv $PACKAGE_DIR/webrtc.tar.bz2 /
 
 FROM ubuntu:20.04
 
-COPY --from=builder /webrtc.tar.gz /
+COPY --from=builder /webrtc.tar.bz2 /
