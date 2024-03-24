@@ -72,6 +72,14 @@ mv NOTICE LICENSES/webrtc-license.txt
 case "$AUTOBUILD_PLATFORM" in
     darwin64)
         mv Frameworks/WebRTC.xcframework/macos-x86_64/WebRTC.framework lib/release
+        if [ -n "${APPLE_SIGNATURE:=""}" -a -n "${APPLE_KEY:=""}" -a -n "${APPLE_KEYCHAIN:=""}" ]; then
+            KEYCHAIN_PATH="$HOME/Library/Keychains/$APPLE_KEYCHAIN"
+            security unlock-keychain -p $APPLE_KEY $KEYCHAIN_PATH
+            codesign --keychain "$KEYCHAIN_PATH" --sign "$APPLE_SIGNATURE" --force --timestamp lib/release/WebRTC.framework || true
+            security lock-keychain $KEYCHAIN_PATH
+        else
+            echo "Code signing not configured; skipping codesign."
+        fi
     ;;
 esac
 
