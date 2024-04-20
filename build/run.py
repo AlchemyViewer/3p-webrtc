@@ -185,6 +185,7 @@ PATCHES = {
         'is_pod-is-deprecated.patch',
         'upsample-to-48khz-for-echo-cancellation-for-now.patch',
         'msvc-checks-template.patch',
+        'disable_mute_of_audio_processing.patch',
     ],
     'windows_x86': [
         'add_license_dav1d.patch',
@@ -194,6 +195,7 @@ PATCHES = {
         'is_pod-is-deprecated.patch',
         'upsample-to-48khz-for-echo-cancellation-for-now.patch',
         'msvc-checks-template.patch',
+        'disable_mute_of_audio_processing.patch',
     ],
     'windows_arm64': [
         'add_license_dav1d.patch',
@@ -203,76 +205,90 @@ PATCHES = {
         'is_pod-is-deprecated.patch',
         'upsample-to-48khz-for-echo-cancellation-for-now.patch',
         'msvc-checks-template.patch'
+        'disable_mute_of_audio_processing.patch',
     ],
     'macos_x86_64': [
         'add_license_dav1d.patch',
         'fix_mocks.patch',
         'macos_h264_encoder.patch',
         'upsample-to-48khz-for-echo-cancellation-for-now.patch',
+        'disable_mute_of_audio_processing.patch',
     ],
     'macos_arm64': [
         'add_license_dav1d.patch',
         'fix_mocks.patch',
         'macos_h264_encoder.patch',
         'upsample-to-48khz-for-echo-cancellation-for-now.patch',
+        'disable_mute_of_audio_processing.patch',
     ],
     'ios': [
         'add_license_dav1d.patch',
         'fix_mocks.patch',
         'macos_h264_encoder.patch',
         'upsample-to-48khz-for-echo-cancellation-for-now.patch',
+        'disable_mute_of_audio_processing.patch',
     ],
     'android': [
         'add_license_dav1d.patch',
         'android_webrtc_version.patch',
         'fix_mocks.patch',
         'upsample-to-48khz-for-echo-cancellation-for-now.patch',
+        'disable_mute_of_audio_processing.patch',
     ],
     'android_prefixed': [
         'add_license_dav1d.patch',
         'android_webrtc_version.patch',
         'fix_mocks.patch',
-        'jni_prefix.patch'
+        'jni_prefix.patch',
+        'disable_mute_of_audio_processing.patch',
     ],
     'raspberry-pi-os_armv6': [
         'add_license_dav1d.patch',
         'fix_mocks.patch',
         'upsample-to-48khz-for-echo-cancellation-for-now.patch',
+        'disable_mute_of_audio_processing.patch',
     ],
     'raspberry-pi-os_armv7': [
         'add_license_dav1d.patch',
         'fix_mocks.patch',
         'upsample-to-48khz-for-echo-cancellation-for-now.patch',
+        'disable_mute_of_audio_processing.patch',
     ],
     'raspberry-pi-os_armv8': [
         'add_license_dav1d.patch',
         'fix_mocks.patch',
         'upsample-to-48khz-for-echo-cancellation-for-now.patch',
+        'disable_mute_of_audio_processing.patch',
     ],
     'ubuntu-18.04_armv8': [
         'add_license_dav1d.patch',
         'fix_mocks.patch',
         'upsample-to-48khz-for-echo-cancellation-for-now.patch',
+        'disable_mute_of_audio_processing.patch',
     ],
     'ubuntu-20.04_armv8': [
         'add_license_dav1d.patch',
         'fix_mocks.patch',
         'upsample-to-48khz-for-echo-cancellation-for-now.patch',
+        'disable_mute_of_audio_processing.patch',
     ],
     'ubuntu-18.04_x86_64': [
         'add_license_dav1d.patch',
         'fix_mocks.patch',
         'upsample-to-48khz-for-echo-cancellation-for-now.patch',
+        'disable_mute_of_audio_processing.patch',
     ],
     'ubuntu-20.04_x86_64': [
         'add_license_dav1d.patch',
         'fix_mocks.patch',
         'upsample-to-48khz-for-echo-cancellation-for-now.patch',
+        'disable_mute_of_audio_processing.patch',
     ],
     'ubuntu-22.04_x86_64': [
         'add_license_dav1d.patch',
         'fix_mocks.patch',
         'upsample-to-48khz-for-echo-cancellation-for-now.patch',
+        'disable_mute_of_audio_processing.patch',
     ],
 }
 
