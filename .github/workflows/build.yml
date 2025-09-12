@@ -21,7 +21,7 @@ jobs:
           - windows_x86_64
     runs-on: windows-2025
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Disk Cleanup
       run: |
         Get-PSDrive
@@ -56,11 +56,11 @@ jobs:
           # - ios
     runs-on: macos-15
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Select Xcode 16.4
       run: sudo xcode-select --switch /Applications/Xcode_16.4.app/Contents/Developer
     - run: brew install ninja
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.12'
     - run: pip install setuptools
@@ -90,7 +90,7 @@ jobs:
           # - android_prefixed
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Disk Cleanup
       run: |
         df -h
