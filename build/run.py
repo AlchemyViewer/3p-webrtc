@@ -374,7 +374,7 @@ def get_webrtc(source_dir, patch_dir, version, target,
                 cmd(['git', 'branch'])
                 cmd(['git', 'checkout', '-f', version])
             cmd(['git', 'clean', '-df'])
-            cmd(['gclient', 'sync', '-D', '--force', '--reset', '--no-history', '--jobs=8'])
+            cmd(['gclient', 'sync', '-D', '--force', '--reset', '--revision', version, '--no-history', '--jobs=8'])
             for patch in PATCHES[target]:
                 depth, dirs = PATCH_INFO.get(patch, (1, ['.']))
                 dir = os.path.join(src_dir, *dirs)
@@ -752,7 +752,8 @@ def build_webrtc(
                 f'target_cpu="{target_cpus[target]}"',
                 "use_custom_libcxx=false",
                 "use_custom_libcxx_for_host=false",
-                "is_clang=true"
+                "is_clang=true",
+                'use_lld=false',
             ]
         elif target in ('macos_x86_64', 'macos_arm64'):
             gn_args += [
@@ -1218,7 +1219,7 @@ def main():
             commit = version_info.webrtc_commit
             if args.commit:
                 commit = args.commit
-            
+
             print("Building for commit: ", commit)
 
             # ソース取得
