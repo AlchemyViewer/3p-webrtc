@@ -60,7 +60,7 @@ jobs:
     - name: Select Xcode 16.4
       run: sudo xcode-select --switch /Applications/Xcode_16.4.app/Contents/Developer
     - run: brew install ninja
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.12'
     - run: pip install setuptools
