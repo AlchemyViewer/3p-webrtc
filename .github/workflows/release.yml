@@ -153,7 +153,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         path: _packages
-    - uses: secondlife/action-autobuild@v5
+    - uses: AlchemyViewer/action-autobuild@v5
       with:
         checkout: false
         token: ${{ github.token }}
@@ -177,7 +177,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         path: _packages
-    - uses: secondlife/action-autobuild@v5
+    - uses: AlchemyViewer/action-autobuild@v5
       with:
         checkout: false
         token: ${{ github.token }}
@@ -201,7 +201,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         path: _packages
-    - uses: secondlife/action-autobuild@v5
+    - uses: AlchemyViewer/action-autobuild@v5
       with:
         checkout: false
         token: ${{ github.token }}
@@ -214,4 +214,4 @@ jobs:
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/m')
     steps:
-      - uses: secondlife/action-autobuild-release@v3
+      - uses: AlchemyViewer/action-autobuild-release@v3
