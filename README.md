@@ -37,7 +37,7 @@ The following instructins describe the process of building the library package
 From the root directory of the 3p-webrtc-build, run the following script:
 ```build-local-autobuild-package.sh```
 
-This will build the Ubuntu 22.04 version of the WebRTC libraries and package
+This will build the Ubuntu 24.04 version of the WebRTC libraries and package
 them as an autobuild package.  The autobuild package will be created in
 the root directory, and will resemble something like:
 ```webrtc-m137_release.242741945-linux64-242741945.tar.bz2```
