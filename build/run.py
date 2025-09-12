@@ -374,7 +374,7 @@ def get_webrtc(source_dir, patch_dir, version, target,
                 cmd(['git', 'branch'])
                 cmd(['git', 'checkout', '-f', version])
             cmd(['git', 'clean', '-df'])
-            cmd(['gclient', 'sync', '-D', '--force', '--reset', '--no-history', '--jobs=8'])
+            cmd(['gclient', 'sync', '-D', '--force', '--reset', '--revision', version, '--no-history', '--jobs=8'])
             for patch in PATCHES[target]:
                 depth, dirs = PATCH_INFO.get(patch, (1, ['.']))
                 dir = os.path.join(src_dir, *dirs)
