@@ -752,7 +752,8 @@ def build_webrtc(
                 f'target_cpu="{target_cpus[target]}"',
                 "use_custom_libcxx=false",
                 "use_custom_libcxx_for_host=false",
-                "is_clang=true"
+                "is_clang=true",
+                'use_lld=false',
             ]
         elif target in ('macos_x86_64', 'macos_arm64'):
             gn_args += [
@@ -1218,7 +1219,7 @@ def main():
             commit = version_info.webrtc_commit
             if args.commit:
                 commit = args.commit
-            
+
             print("Building for commit: ", commit)
 
             # ソース取得
