@@ -799,7 +799,7 @@ def build_webrtc(
                 'rtc_use_pipewire=false',
                 "use_custom_libcxx=false",
                 "use_custom_libcxx_for_host=false",
-                'rtc_include_pulse_audio=false',
+                'rtc_include_pulse_audio=true',
                 'rtc_include_internal_audio_device=true',
             ]
         else:

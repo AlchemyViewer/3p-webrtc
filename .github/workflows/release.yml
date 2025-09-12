@@ -67,8 +67,8 @@ jobs:
       output-artifact-id: ${{ steps.artifact-upload-step.outputs.artifact-id }}
     steps:
     - uses: actions/checkout@v4
-    - name: Select Xcode 16.1
-      run: sudo xcode-select --switch /Applications/Xcode_16.1.app/Contents/Developer
+    - name: Select Xcode 16.4
+      run: sudo xcode-select --switch /Applications/Xcode_16.4.app/Contents/Developer
     - run: brew install ninja
     - uses: actions/setup-python@v5
       with:
@@ -105,7 +105,7 @@ jobs:
           # - ubuntu-20.04_x86_64
           - ubuntu-22.04_x86_64
           # - android
-    runs-on: linux-large 
+    runs-on: ubuntu-22.04
     outputs:
       output-artifact-id: ${{ steps.artifact-upload-step.outputs.artifact-id }}
     steps:
