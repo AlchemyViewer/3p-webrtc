@@ -26,7 +26,7 @@ case "$AUTOBUILD_PLATFORM" in
         autobuild="$AUTOBUILD"
     ;;
     linux*)
-        build_type="ubuntu-22.04_x86_64"
+        build_type="ubuntu-24.04_x86_64"
         autobuild="$AUTOBUILD"
     ;;
     *)
