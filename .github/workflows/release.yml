@@ -151,7 +151,7 @@ jobs:
         fetch-depth: 0
         submodules: recursive
     - name: Download webrtc artifacts
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         path: _packages
     - uses: AlchemyViewer/action-autobuild@v5
@@ -175,7 +175,7 @@ jobs:
         fetch-depth: 0
         submodules: recursive
     - name: Download webrtc artifacts
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         path: _packages
     - uses: AlchemyViewer/action-autobuild@v5
@@ -199,7 +199,7 @@ jobs:
         fetch-depth: 0
         submodules: recursive
     - name: Download webrtc artifacts
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         path: _packages
     - uses: AlchemyViewer/action-autobuild@v5
