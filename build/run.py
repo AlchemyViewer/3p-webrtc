@@ -268,6 +268,8 @@ PATCHES = {
         'bug_8759_workaround.patch',
         'disable_mute_of_audio_processing.patch',
         'crash_on_fatal_error.patch',
+        'gcc_fpermissive_error.patch',
+        'enable_gcc_permissive.patch',
     ],
     'raspberry-pi-os_armv7': [
         'add_license_dav1d.patch',
@@ -276,6 +278,8 @@ PATCHES = {
         'bug_8759_workaround.patch',
         'disable_mute_of_audio_processing.patch',
         'crash_on_fatal_error.patch',
+        'gcc_fpermissive_error.patch',
+        'enable_gcc_permissive.patch',
     ],
     'raspberry-pi-os_armv8': [
         'add_license_dav1d.patch',
@@ -284,6 +288,8 @@ PATCHES = {
         'bug_8759_workaround.patch',
         'disable_mute_of_audio_processing.patch',
         'crash_on_fatal_error.patch',
+        'gcc_fpermissive_error.patch',
+        'enable_gcc_permissive.patch',
     ],
     'ubuntu-18.04_armv8': [
         'add_license_dav1d.patch',
@@ -292,6 +298,8 @@ PATCHES = {
         'bug_8759_workaround.patch',
         'disable_mute_of_audio_processing.patch',
         'crash_on_fatal_error.patch',
+        'gcc_fpermissive_error.patch',
+        'enable_gcc_permissive.patch',
     ],
     'ubuntu-20.04_armv8': [
         'add_license_dav1d.patch',
@@ -300,6 +308,8 @@ PATCHES = {
         'bug_8759_workaround.patch',
         'disable_mute_of_audio_processing.patch',
         'crash_on_fatal_error.patch',
+        'gcc_fpermissive_error.patch',
+        'enable_gcc_permissive.patch',
     ],
     'ubuntu-18.04_x86_64': [
         'add_license_dav1d.patch',
@@ -308,6 +318,8 @@ PATCHES = {
         'bug_8759_workaround.patch',
         'disable_mute_of_audio_processing.patch',
         'crash_on_fatal_error.patch',
+        'gcc_fpermissive_error.patch',
+        'enable_gcc_permissive.patch',
     ],
     'ubuntu-20.04_x86_64': [
         'add_license_dav1d.patch',
@@ -316,6 +328,8 @@ PATCHES = {
         'bug_8759_workaround.patch',
         'disable_mute_of_audio_processing.patch',
         'crash_on_fatal_error.patch',
+        'gcc_fpermissive_error.patch',
+        'enable_gcc_permissive.patch',
     ],
     'ubuntu-22.04_x86_64': [
         'add_license_dav1d.patch',
@@ -324,6 +338,8 @@ PATCHES = {
         'bug_8759_workaround.patch',
         'disable_mute_of_audio_processing.patch',
         'crash_on_fatal_error.patch',
+        'gcc_fpermissive_error.patch',
+        'enable_gcc_permissive.patch',
     ],
     'ubuntu-24.04_x86_64': [
         'add_license_dav1d.patch',
@@ -332,6 +348,8 @@ PATCHES = {
         'bug_8759_workaround.patch',
         'disable_mute_of_audio_processing.patch',
         'crash_on_fatal_error.patch',
+        'gcc_fpermissive_error.patch',
+        'enable_gcc_permissive.patch',
     ],
 }
 
@@ -808,6 +826,10 @@ def build_webrtc(
                 'rtc_use_pipewire=false',
                 "use_custom_libcxx=false",
                 "use_custom_libcxx_for_host=false",
+                'is_clang=false',
+                'clang_use_chrome_plugins=false',
+                'use_lld=false',
+                'use_thin_lto=false',
                 'rtc_include_pulse_audio=true',
                 'rtc_include_internal_audio_device=true',
             ]
@@ -833,10 +855,8 @@ def build_webrtc(
 
     if target in ['windows_x86_64', 'windows_x86', 'windows_arm64']:
         pass
-    elif target in ('macos_x86_64', 'macos_arm64'):
-        ar = '/usr/bin/ar'
     else:
-        ar = os.path.join(webrtc_src_dir, 'third_party/llvm-build/Release+Asserts/bin/llvm-ar')
+        ar = '/usr/bin/ar'
 
     # ar で libwebrtc.a を生成する
     # Create libwebrtc.a with ar

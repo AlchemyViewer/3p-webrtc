@@ -27,4 +27,5 @@ apt-get -y install \
   unzip \
   vim \
   wget \
-  xz-utils
+  xz-utils \
+  build-essential
