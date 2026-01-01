@@ -39,7 +39,7 @@ jobs:
         Get-PSDrive
     - run: "& .\\build.${{ matrix.name }}.ps1 \"${{ github.event.inputs.commitHash }}\""
     - name: Upload Artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: webrtc.${{ matrix.name }}.bz2
         path: build\_package\${{ matrix.name }}\webrtc.tar.bz2
@@ -66,7 +66,7 @@ jobs:
     - run: pip install setuptools
     - run: ./build.${{ matrix.name }}.sh "${{ github.event.inputs.commitHash }}"
     - name: Upload Artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: webrtc.${{ matrix.name }}.tar.bz2
         path: build/_package/${{ matrix.name }}/webrtc.tar.bz2
@@ -104,7 +104,7 @@ jobs:
         df -h
     - run: ./build.${{ matrix.name }}.sh "${{ github.event.inputs.commitHash }}"
     - name: Upload Artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: webrtc.${{ matrix.name }}.tar.bz2
         path: build/_package/${{ matrix.name }}/webrtc.tar.bz2
