@@ -1,5 +1,5 @@
 diff --git a/modules/audio_device/win/audio_device_core_win.cc b/modules/audio_device/win/audio_device_core_win.cc
-index f1cc0474fc..f8e4f25bb9 100644
+index f1cc0474fc..2aacd1d309 100644
 --- a/modules/audio_device/win/audio_device_core_win.cc
 +++ b/modules/audio_device/win/audio_device_core_win.cc
 @@ -1845,8 +1845,8 @@ int32_t AudioDeviceWindowsCore::InitPlayout() {
@@ -142,14 +142,13 @@ index f1cc0474fc..f8e4f25bb9 100644
      RTC_LOG(LS_VERBOSE) << "Additional settings:";
      RTC_LOG(LS_VERBOSE) << "_playAudioFrameSize: " << _playAudioFrameSize;
      RTC_LOG(LS_VERBOSE) << "_playBlockSize     : " << _playBlockSize;
-@@ -1980,12 +2007,14 @@ int32_t AudioDeviceWindowsCore::InitPlayout() {
+@@ -1980,12 +2007,12 @@ int32_t AudioDeviceWindowsCore::InitPlayout() {
    }
    hr = _ptrClientOut->Initialize(
        AUDCLNT_SHAREMODE_SHARED,  // share Audio Engine with other applications
 -      AUDCLNT_STREAMFLAGS_EVENTCALLBACK,  // processing of the audio buffer by
-+      AUDCLNT_STREAMFLAGS_EVENTCALLBACK |  // processing of the audio buffer by
-                                           // the client will be event driven
-+          AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM |
+-                                          // the client will be event driven
++      AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM |  // let WASAPI handle format conversion
 +          AUDCLNT_STREAMFLAGS_SRC_DEFAULT_QUALITY,
        hnsBufferDuration,  // requested buffer capacity as a time value (in
                            // 100-nanosecond units)
@@ -159,7 +158,19 @@ index f1cc0474fc..f8e4f25bb9 100644
        NULL);              // session GUID
  
    if (FAILED(hr)) {
-@@ -2031,7 +2060,7 @@ int32_t AudioDeviceWindowsCore::InitPlayout() {
+@@ -2016,11 +2043,6 @@ int32_t AudioDeviceWindowsCore::InitPlayout() {
+                         << bufferFrameCount * _playAudioFrameSize << " bytes)";
+   }
+ 
+-  // Set the event handle that the system signals when an audio buffer is ready
+-  // to be processed by the client.
+-  hr = _ptrClientOut->SetEventHandle(_hRenderSamplesReadyEvent);
+-  EXIT_ON_ERROR(hr);
+-
+   // Get an IAudioRenderClient interface.
+   SAFE_RELEASE(_ptrRenderClient);
+   hr = _ptrClientOut->GetService(__uuidof(IAudioRenderClient),
+@@ -2031,7 +2053,7 @@ int32_t AudioDeviceWindowsCore::InitPlayout() {
    _playIsInitialized = true;
  
    CoTaskMemFree(pWfxOut);
@@ -168,7 +179,7 @@ index f1cc0474fc..f8e4f25bb9 100644
  
    RTC_LOG(LS_VERBOSE) << "render side is now initialized";
    return 0;
-@@ -2039,7 +2068,7 @@ int32_t AudioDeviceWindowsCore::InitPlayout() {
+@@ -2039,7 +2061,7 @@ int32_t AudioDeviceWindowsCore::InitPlayout() {
  Exit:
    _TraceCOMError(hr);
    CoTaskMemFree(pWfxOut);
@@ -177,7 +188,7 @@ index f1cc0474fc..f8e4f25bb9 100644
    SAFE_RELEASE(_ptrClientOut);
    SAFE_RELEASE(_ptrRenderClient);
    return -1;
-@@ -2163,7 +2192,7 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
+@@ -2163,7 +2185,7 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
    HRESULT hr = S_OK;
    WAVEFORMATEX* pWfxIn = NULL;
    WAVEFORMATEXTENSIBLE Wfx = WAVEFORMATEXTENSIBLE();
@@ -186,7 +197,7 @@ index f1cc0474fc..f8e4f25bb9 100644
  
    // Create COM object with IAudioClient interface.
    SAFE_RELEASE(_ptrClientIn);
-@@ -2201,7 +2230,7 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
+@@ -2201,7 +2223,7 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
    Wfx.Samples.wValidBitsPerSample = Wfx.Format.wBitsPerSample;
    Wfx.SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
  
@@ -195,7 +206,7 @@ index f1cc0474fc..f8e4f25bb9 100644
    hr = S_FALSE;
  
    // Iterate over frequencies and channels, in order of priority
-@@ -2218,8 +2247,10 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
+@@ -2218,8 +2240,10 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
        // If the method succeeds and the audio endpoint device supports the
        // specified stream format, it returns S_OK. If the method succeeds and
        // provides a closest match to the specified format, it returns S_FALSE.
@@ -208,7 +219,7 @@ index f1cc0474fc..f8e4f25bb9 100644
        if (hr == S_OK) {
          break;
        } else {
-@@ -2228,10 +2259,14 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
+@@ -2228,10 +2252,14 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
                             << ", nSamplesPerSec=" << Wfx.Format.nSamplesPerSec
                             << " is not supported. Closest match: "
                                "nChannels="
@@ -227,7 +238,7 @@ index f1cc0474fc..f8e4f25bb9 100644
          } else {
            RTC_LOG(LS_INFO) << "nChannels=" << Wfx.Format.nChannels
                             << ", nSamplesPerSec=" << Wfx.Format.nSamplesPerSec
-@@ -2242,7 +2277,20 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
+@@ -2242,7 +2270,20 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
      if (hr == S_OK)
        break;
    }
@@ -249,7 +260,7 @@ index f1cc0474fc..f8e4f25bb9 100644
    if (hr == S_OK) {
      _recAudioFrameSize = Wfx.Format.nBlockAlign;
      _recSampleRate = Wfx.Format.nSamplesPerSec;
-@@ -2270,6 +2318,8 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
+@@ -2270,6 +2311,8 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
        AUDCLNT_SHAREMODE_SHARED,  // share Audio Engine with other applications
        AUDCLNT_STREAMFLAGS_EVENTCALLBACK |  // processing of the audio buffer by
                                             // the client will be event driven
@@ -258,7 +269,7 @@ index f1cc0474fc..f8e4f25bb9 100644
            AUDCLNT_STREAMFLAGS_NOPERSIST,   // volume and mute settings for an
                                             // audio session will not persist
                                             // across system restarts
-@@ -2321,7 +2371,7 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
+@@ -2321,7 +2364,7 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
    _recIsInitialized = true;
  
    CoTaskMemFree(pWfxIn);
@@ -267,7 +278,7 @@ index f1cc0474fc..f8e4f25bb9 100644
  
    RTC_LOG(LS_VERBOSE) << "capture side is now initialized";
    return 0;
-@@ -2329,7 +2379,7 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
+@@ -2329,7 +2372,7 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
  Exit:
    _TraceCOMError(hr);
    CoTaskMemFree(pWfxIn);
@@ -276,3 +287,42 @@ index f1cc0474fc..f8e4f25bb9 100644
    SAFE_RELEASE(_ptrClientIn);
    SAFE_RELEASE(_ptrCaptureClient);
    return -1;
+@@ -2661,7 +2704,6 @@ DWORD WINAPI AudioDeviceWindowsCore::WSAPICaptureThreadPollDMO(LPVOID context) {
+ 
+ DWORD AudioDeviceWindowsCore::DoRenderThread() {
+   bool keepPlaying = true;
+-  HANDLE waitArray[2] = {_hShutdownRenderEvent, _hRenderSamplesReadyEvent};
+   HRESULT hr = S_OK;
+   HANDLE hMmTask = NULL;
+ 
+@@ -2777,20 +2819,16 @@ DWORD AudioDeviceWindowsCore::DoRenderThread() {
+   // >> ------------------ THREAD LOOP ------------------
+ 
+   while (keepPlaying) {
+-    // Wait for a render notification event or a shutdown event
+-    DWORD waitResult = WaitForMultipleObjects(2, waitArray, FALSE, 500);
+-    switch (waitResult) {
+-      case WAIT_OBJECT_0 + 0:  // _hShutdownRenderEvent
+-        keepPlaying = false;
+-        break;
+-      case WAIT_OBJECT_0 + 1:  // _hRenderSamplesReadyEvent
+-        break;
+-      case WAIT_TIMEOUT:  // timeout notification
+-        RTC_LOG(LS_WARNING) << "render event timed out after 0.5 seconds";
+-        goto Exit;
+-      default:  // unexpected error
+-        RTC_LOG(LS_WARNING) << "unknown wait termination on render side";
+-        goto Exit;
++    // Sleep for half the device period, then poll for available buffer space.
++    // We use the shutdown event wait as the sleep mechanism so we can still
++    // wake immediately on shutdown.
++    DWORD sleepMs = static_cast<DWORD>(devPeriod / 10000 / 2);
++    if (sleepMs < 1)
++      sleepMs = 1;
++    DWORD waitResult = WaitForSingleObject(_hShutdownRenderEvent, sleepMs);
++    if (waitResult == WAIT_OBJECT_0) {
++      keepPlaying = false;
++      break;
+     }
+ 
+     while (keepPlaying) {

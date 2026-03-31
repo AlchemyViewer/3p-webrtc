@@ -8,7 +8,6 @@ on:
         default: 'm137_release'
         required: true
 
-
 jobs:
   build-windows:
     defaults:
@@ -85,11 +84,11 @@ jobs:
           # - ubuntu-20.04_armv8
           # - ubuntu-18.04_x86_64
           # - ubuntu-20.04_x86_64
-          # - ubuntu-22.04_x86_64
-          - ubuntu-24.04_x86_64
+          - ubuntu-22.04_x86_64
+          # - ubuntu-24.04_x86_64
           # - android
           # - android_prefixed
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v6
     - name: Disk Cleanup
