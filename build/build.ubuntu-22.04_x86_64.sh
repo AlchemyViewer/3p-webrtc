@@ -18,5 +18,5 @@ DOCKER_BUILDKIT=1 docker build \
 
 mkdir -p $PACKAGE_DIR
 CONTAINER_ID=`docker container create $IMAGE_NAME`
-docker container cp $CONTAINER_ID:/webrtc.tar.bz2 $PACKAGE_DIR/webrtc.tar.bz2
+docker container cp $CONTAINER_ID:/webrtc.$PACKAGE_NAME.tar.xz $PACKAGE_DIR/webrtc.$PACKAGE_NAME.tar.xz
 docker container rm $CONTAINER_ID

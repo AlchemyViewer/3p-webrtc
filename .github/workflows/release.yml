@@ -21,6 +21,10 @@ jobs:
       output-artifact-id: ${{ steps.artifact-upload-step.outputs.artifact-id }}
     steps:
     - uses: actions/checkout@v6
+    - uses: actions/setup-python@v6
+      with:
+        python-version: '3.14'
+    - run: pip install setuptools
     - name: Determine Release Tag
       env:
         RELEASE: ${{ github.ref_name }}
@@ -50,7 +54,7 @@ jobs:
       id: artifact-upload-step
       with:
         name: webrtc.${{ matrix.name }}
-        path: build\_package\${{ matrix.name }}\webrtc.tar.bz2
+        path: build\_package\${{ matrix.name }}\webrtc.${{ matrix.name }}.tar.xz
   build-macos:
     defaults:
       run:
@@ -62,17 +66,17 @@ jobs:
           - macos_arm64
           - macos_x86_64
           # - ios
-    runs-on: macos-15
+    runs-on: macos-26
     outputs:
       output-artifact-id: ${{ steps.artifact-upload-step.outputs.artifact-id }}
     steps:
     - uses: actions/checkout@v6
-    - name: Select Xcode 16.4
-      run: sudo xcode-select --switch /Applications/Xcode_16.4.app/Contents/Developer
+    - name: Select Xcode 26.3
+      run: sudo xcode-select --switch /Applications/Xcode_26.3.app/Contents/Developer
     - run: brew install ninja
     - uses: actions/setup-python@v6
       with:
-        python-version: '3.12'
+        python-version: '3.14'
     - run: pip install setuptools
     - name: Determine Release Tag
       env:
@@ -87,7 +91,7 @@ jobs:
       id: artifact-upload-step
       with:
         name: webrtc.${{ matrix.name }}
-        path: build/_package/${{ matrix.name }}/webrtc.tar.bz2
+        path: build/_package/${{ matrix.name }}/webrtc.${{ matrix.name }}.tar.xz
   build-linux:
     defaults:
       run:
@@ -103,10 +107,11 @@ jobs:
           # - ubuntu-20.04_armv8
           # - ubuntu-18.04_x86_64
           # - ubuntu-20.04_x86_64
-          # - ubuntu-22.04_x86_64
-          - ubuntu-24.04_x86_64
+          - ubuntu-22.04_x86_64
+          # - ubuntu-24.04_x86_64
           # - android
-    runs-on: ubuntu-24.04
+          # - android_prefixed
+    runs-on: ubuntu-22.04
     outputs:
       output-artifact-id: ${{ steps.artifact-upload-step.outputs.artifact-id }}
     steps:
@@ -121,6 +126,10 @@ jobs:
         # 17GB
         sudo rm -rf /usr/share/dotnet
         df -h
+    - uses: actions/setup-python@v6
+      with:
+        python-version: '3.14'
+    - run: pip install setuptools
     - name: Determine Release Tag
       env:
         RELEASE: ${{ github.ref_name }}
@@ -134,85 +143,21 @@ jobs:
       id: artifact-upload-step
       with:
         name: webrtc.${{ matrix.name }}
-        path: build/_package/${{ matrix.name }}/webrtc.tar.bz2
-  package-macos:
-    needs:
-    - build-macos
-    runs-on: macos-15
-    steps:
-    # Checkout first to avoid damaging artifact download below
-    - name: Checkout
-      uses: actions/checkout@v6
-      with:
-        # Work around the fact that in the context of a pull request github.sha
-        # references a dynamic merge commit rather than the branch head
-        # https://frontside.com/blog/2020-05-26-github-actions-pull_request/#how-does-pull_request-affect-actionscheckout
-        ref: ${{ github.event.pull_request.head.sha || github.sha }}
-        fetch-depth: 0
-        submodules: recursive
-    - name: Download webrtc artifacts
-      uses: actions/download-artifact@v8
-      with:
-        path: _packages
-    - uses: AlchemyViewer/action-autobuild@v5
-      with:
-        checkout: false
-        token: ${{ github.token }}
-        build-args: ../build-cmd.sh ${{ needs.build-macos.outputs.output-artifact-id }}
-  package-windows:
-    needs:
-    - build-windows
-    runs-on: windows-2022
-    steps:
-    # Checkout first to avoid damaging artifact download below
-    - name: Checkout
-      uses: actions/checkout@v6
-      with:
-        # Work around the fact that in the context of a pull request github.sha
-        # references a dynamic merge commit rather than the branch head
-        # https://frontside.com/blog/2020-05-26-github-actions-pull_request/#how-does-pull_request-affect-actionscheckout
-        ref: ${{ github.event.pull_request.head.sha || github.sha }}
-        fetch-depth: 0
-        submodules: recursive
-    - name: Download webrtc artifacts
-      uses: actions/download-artifact@v8
-      with:
-        path: _packages
-    - uses: AlchemyViewer/action-autobuild@v5
-      with:
-        checkout: false
-        token: ${{ github.token }}
-        build-args: ../build-cmd.sh ${{ needs.build-windows.outputs.output-artifact-id }}
-  package-linux:
-    needs:
-    - build-linux
-    runs-on: ubuntu-latest
-    steps:
-    # Checkout first to avoid damaging artifact download below
-    - name: Checkout
-      uses: actions/checkout@v6
-      with:
-        # Work around the fact that in the context of a pull request github.sha
-        # references a dynamic merge commit rather than the branch head
-        # https://frontside.com/blog/2020-05-26-github-actions-pull_request/#how-does-pull_request-affect-actionscheckout
-        ref: ${{ github.event.pull_request.head.sha || github.sha }}
-        fetch-depth: 0
-        submodules: recursive
-    - name: Download webrtc artifacts
-      uses: actions/download-artifact@v8
-      with:
-        path: _packages
-    - uses: AlchemyViewer/action-autobuild@v5
-      with:
-        checkout: false
-        token: ${{ github.token }}
-        build-args: ../build-cmd.sh ${{ needs.build-linux.outputs.output-artifact-id }}
+        path: build/_package/${{ matrix.name }}/webrtc.${{ matrix.name }}.tar.xz
   release:
     needs:
-    - package-windows
-    - package-macos
-    - package-linux
+      - build-windows
+      - build-macos
+      - build-linux
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/m')
     steps:
-      - uses: AlchemyViewer/action-autobuild-release@v4
+    - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
+      with:
+        path: artifacts
+    - uses: softprops/action-gh-release@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        files: artifacts/**

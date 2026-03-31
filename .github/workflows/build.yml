@@ -18,15 +18,21 @@ jobs:
       matrix:
         name:
           - windows_x86_64
-    runs-on: windows-2025
+          # - windows_arm64
+          # - windows_x86
+    runs-on: windows-2022
     steps:
     - uses: actions/checkout@v6
+    - uses: actions/setup-python@v6
+      with:
+        python-version: '3.14'
+    - run: pip install setuptools
     - name: Disk Cleanup
       run: |
         Get-PSDrive
         # Cache 済み Docker Image の削除
         # Clean unused docker images
-        docker rmi $(docker images -q -a)
+        docker image prune -a -f
         # Android SDK の削除
         # Delete Android SDK
         Remove-Item -Recurse -Force $Env:ANDROID_HOME -ErrorAction Ignore
@@ -40,8 +46,8 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v7
       with:
-        name: webrtc.${{ matrix.name }}.bz2
-        path: build\_package\${{ matrix.name }}\webrtc.tar.bz2
+        name: webrtc.${{ matrix.name }}
+        path: build\_package\${{ matrix.name }}\webrtc.${{ matrix.name }}.tar.xz
   build-macos:
     defaults:
       run:
@@ -53,22 +59,22 @@ jobs:
           - macos_arm64
           - macos_x86_64
           # - ios
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
     - uses: actions/checkout@v6
-    - name: Select Xcode 16.4
-      run: sudo xcode-select --switch /Applications/Xcode_16.4.app/Contents/Developer
+    - name: Select Xcode 26.3
+      run: sudo xcode-select --switch /Applications/Xcode_26.3.app/Contents/Developer
     - run: brew install ninja
     - uses: actions/setup-python@v6
       with:
-        python-version: '3.12'
+        python-version: '3.14'
     - run: pip install setuptools
     - run: ./build.${{ matrix.name }}.sh "${{ github.event.inputs.commitHash }}"
     - name: Upload Artifact
       uses: actions/upload-artifact@v7
       with:
-        name: webrtc.${{ matrix.name }}.tar.bz2
-        path: build/_package/${{ matrix.name }}/webrtc.tar.bz2
+        name: webrtc.${{ matrix.name }}
+        path: build/_package/${{ matrix.name }}/webrtc.${{ matrix.name }}.tar.xz
   build-linux:
     defaults:
       run:
@@ -101,10 +107,14 @@ jobs:
         # 17GB
         sudo rm -rf /usr/share/dotnet
         df -h
+    - uses: actions/setup-python@v6
+      with:
+        python-version: '3.14'
+    - run: pip install setuptools
     - run: ./build.${{ matrix.name }}.sh "${{ github.event.inputs.commitHash }}"
     - name: Upload Artifact
       uses: actions/upload-artifact@v7
       with:
-        name: webrtc.${{ matrix.name }}.tar.bz2
-        path: build/_package/${{ matrix.name }}/webrtc.tar.bz2
+        name: webrtc.${{ matrix.name }}
+        path: build/_package/${{ matrix.name }}/webrtc.${{ matrix.name }}.tar.xz
 

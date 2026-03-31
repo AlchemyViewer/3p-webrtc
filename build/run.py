@@ -1035,7 +1035,7 @@ def package_webrtc(source_dir, build_dir, package_dir, target,
     # 圧縮
     # Zip files
     with cd(package_dir):
-        with tarfile.open('webrtc.tar.bz2', 'w:bz2') as f:
+        with tarfile.open('webrtc.{}.tar.xz'.format(target), 'w:xz') as f:
             for file in enum_all_files('webrtc', '.'):
                 f.add(name=file, arcname=file)
 
@@ -1212,8 +1212,8 @@ def main():
         # Windows の WebRTC ビルドに必要な環境変数の設定
         # Setting environment variables required for Windows WebRTC build
         mkdir_p(build_dir)
-        download("https://github.com/microsoft/vswhere/releases/download/2.8.4/vswhere.exe", build_dir)
-        path = cmdcap([os.path.join(build_dir, 'vswhere.exe'), '-latest',
+        download("https://github.com/microsoft/vswhere/releases/download/3.1.7/vswhere.exe", build_dir)
+        path = cmdcap([os.path.join(build_dir, 'vswhere.exe'), '-version', '[17.0,18.0)',
                        '-products', '*',
                        '-requires', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64',
                        '-property', 'installationPath'])
@@ -1224,7 +1224,7 @@ def main():
         for m in re.finditer(r'(\w+)=(.*)', stdout):
             os.environ[m.group(1)] = m.group(2)
 
-        os.environ['GYP_MSVS_VERSION'] = "2019"
+        os.environ['GYP_MSVS_VERSION'] = "2022"
         os.environ['DEPOT_TOOLS_WIN_TOOLCHAIN'] = "0"
         os.environ['PYTHONIOENCODING'] = "utf-8"
 
