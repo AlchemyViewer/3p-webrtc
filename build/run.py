@@ -192,6 +192,7 @@ PATCHES = {
         'disable_mute_of_audio_processing.patch',
         'crash_on_fatal_error.patch',
         'windows_add_192k.patch',
+        'windows_dynamic_crt.patch',
     ],
     'windows_x86': [
         'add_license_dav1d.patch',
@@ -203,6 +204,7 @@ PATCHES = {
         'disable_mute_of_audio_processing.patch',
         'crash_on_fatal_error.patch',
         'windows_add_192k.patch',
+        'windows_dynamic_crt.patch',
     ],
     'windows_arm64': [
         'add_license_dav1d.patch',
@@ -214,6 +216,7 @@ PATCHES = {
         'disable_mute_of_audio_processing.patch',
         'crash_on_fatal_error.patch',
         'windows_add_192k.patch',
+        'windows_dynamic_crt.patch',
     ],
     'macos_x86_64': [
         'add_license_dav1d.patch',
@@ -498,6 +501,8 @@ COMMON_GN_ARGS = [
     "use_rtti=true",
     'rtc_build_tools=false',
     "rtc_enable_protobuf=false",
+    "rtc_use_perfetto=false",
+    "rtc_use_absl_mutex=false",
     "treat_warnings_as_errors=false",
 ]
 
@@ -779,7 +784,9 @@ def build_webrtc(
                 "use_custom_libcxx=false",
                 "use_custom_libcxx_for_host=false",
                 "is_clang=true",
+                'clang_use_chrome_plugins=false',
                 'use_lld=false',
+                'use_thin_lto=false',
             ]
         elif target in ('macos_x86_64', 'macos_arm64'):
             gn_args += [
