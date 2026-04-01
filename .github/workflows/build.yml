@@ -5,7 +5,7 @@ on:
     inputs:
       commitHash:
         description: 'webrtc-sdk commit hash'
-        default: 'm137_release'
+        default: 'm144_release'
         required: true
 
 jobs:

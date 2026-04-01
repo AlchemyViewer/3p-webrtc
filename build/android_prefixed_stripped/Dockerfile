@@ -1,7 +1,7 @@
 # syntax = docker/dockerfile:experimental
 FROM ubuntu:24.04 AS builder
 
-ARG PACKAGE_NAME=android_prefixed
+ARG PACKAGE_NAME=android_prefixed_stripped
 ARG COMMIT_HASH=""
 
 ENV PACKAGE_DIR "/root/_package/$PACKAGE_NAME"
