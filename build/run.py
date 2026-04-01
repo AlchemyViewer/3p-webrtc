@@ -191,6 +191,7 @@ PATCHES = {
         'disable_mute_of_audio_processing.patch',
         'crash_on_fatal_error.patch',
         'windows_add_192k.patch',
+        'windows_dynamic_crt.patch',
     ],
     'windows_x86': [
         'add_license_dav1d.patch',
@@ -201,6 +202,7 @@ PATCHES = {
         'disable_mute_of_audio_processing.patch',
         'crash_on_fatal_error.patch',
         'windows_add_192k.patch',
+        'windows_dynamic_crt.patch',
     ],
     'windows_arm64': [
         'add_license_dav1d.patch',
@@ -211,6 +213,7 @@ PATCHES = {
         'disable_mute_of_audio_processing.patch',
         'crash_on_fatal_error.patch',
         'windows_add_192k.patch',
+        'windows_dynamic_crt.patch',
     ],
     'macos_x86_64': [
         'add_license_dav1d.patch',
@@ -479,6 +482,8 @@ COMMON_GN_ARGS = [
     "use_rtti=true",
     'rtc_build_tools=false',
     "rtc_enable_protobuf=false",
+    "rtc_use_perfetto=false",
+    "rtc_use_absl_mutex=false",
     "treat_warnings_as_errors=false",
 ]
 
@@ -589,7 +594,6 @@ def build_webrtc_ios(
         'rtc_libvpx_build_vp9=false',
         'enable_dsyms=false',
         'use_custom_libcxx=false',
-        'treat_warnings_as_errors=false',
         *COMMON_GN_ARGS,
     ]
 
@@ -700,7 +704,6 @@ def build_webrtc_android(
     gn_args_base = [
         f"is_debug={'true' if debug else 'false'}",
         f"is_java_debug={'true' if debug else 'false'}",
-        'treat_warnings_as_errors=false',
         *COMMON_GN_ARGS
     ]
 
@@ -773,7 +776,9 @@ def build_webrtc(
                 "use_custom_libcxx=false",
                 "use_custom_libcxx_for_host=false",
                 "is_clang=true",
+                'clang_use_chrome_plugins=false',
                 'use_lld=false',
+                'use_thin_lto=false',
             ]
         elif target in ('macos_x86_64', 'macos_arm64'):
             gn_args += [
@@ -788,9 +793,9 @@ def build_webrtc(
                 'rtc_enable_objc_symbol_export=false',
                 'use_custom_libcxx=false',
                 "use_custom_libcxx_for_host=false",
-                'treat_warnings_as_errors=false',
                 'clang_use_chrome_plugins=false',
                 'use_lld=false',
+                "is_clang=false",
             ]
         elif target in ('raspberry-pi-os_armv6',
                         'raspberry-pi-os_armv7',
