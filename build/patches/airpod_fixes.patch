@@ -1,12 +1,11 @@
 diff --git a/modules/audio_device/mac/audio_device_mac.cc b/modules/audio_device/mac/audio_device_mac.cc
-index 0a371737b3..eb6061a5d9 100644
+index e9d958b7d2..cb702abbc3 100644
 --- a/modules/audio_device/mac/audio_device_mac.cc
 +++ b/modules/audio_device/mac/audio_device_mac.cc
-@@ -1043,13 +1043,6 @@ int32_t AudioDeviceMac::InitPlayout() {
+@@ -1041,12 +1041,6 @@ int32_t AudioDeviceMac::InitPlayout() {
    RTC_LOG(LS_VERBOSE) << "mFormatFlags = " << _outStreamFormat.mFormatFlags;
-   logCAMsg(rtc::LS_VERBOSE, "mFormatID",
-            (const char*)&_outStreamFormat.mFormatID);
--
+   logCAMsg(LS_VERBOSE, "mFormatID", (const char*)&_outStreamFormat.mFormatID);
+ 
 -  // Our preferred format to work with.
 -  if (_outStreamFormat.mChannelsPerFrame < 2) {
 -    // Disable stereo playout when we only have one channel on the device.
@@ -16,7 +15,7 @@ index 0a371737b3..eb6061a5d9 100644
    WEBRTC_CA_RETURN_ON_ERR(SetDesiredPlayoutFormat());
  
    // Listen for format changes.
-@@ -1790,12 +1783,19 @@ int32_t AudioDeviceMac::InitDevice(const uint16_t userDeviceIndex,
+@@ -1786,12 +1780,19 @@ int32_t AudioDeviceMac::InitDevice(const uint16_t userDeviceIndex,
  OSStatus AudioDeviceMac::SetDesiredPlayoutFormat() {
    // Our preferred format to work with.
    _outDesiredFormat.mSampleRate = N_PLAY_SAMPLES_PER_SEC;
@@ -38,7 +37,7 @@ index 0a371737b3..eb6061a5d9 100644
    }
  
    _renderDelayOffsetSamples =
-@@ -2096,12 +2096,6 @@ int32_t AudioDeviceMac::HandleStreamFormatChange(
+@@ -2092,12 +2093,6 @@ int32_t AudioDeviceMac::HandleStreamFormatChange(
      return -1;
    }
  
@@ -51,8 +50,8 @@ index 0a371737b3..eb6061a5d9 100644
    RTC_LOG(LS_VERBOSE) << "Stream format:";
    RTC_LOG(LS_VERBOSE) << "mSampleRate = " << streamFormat.mSampleRate
                        << ", mChannelsPerFrame = "
-@@ -2115,6 +2109,12 @@ int32_t AudioDeviceMac::HandleStreamFormatChange(
-   logCAMsg(rtc::LS_VERBOSE, "mFormatID", (const char*)&streamFormat.mFormatID);
+@@ -2111,6 +2106,12 @@ int32_t AudioDeviceMac::HandleStreamFormatChange(
+   logCAMsg(LS_VERBOSE, "mFormatID", (const char*)&streamFormat.mFormatID);
  
    if (propertyAddress.mScope == kAudioDevicePropertyScopeInput) {
 +    if (_ptrAudioBuffer && streamFormat.mChannelsPerFrame != _recChannels) {
@@ -64,7 +63,7 @@ index 0a371737b3..eb6061a5d9 100644
      const int io_block_size_samples = streamFormat.mChannelsPerFrame *
                                        streamFormat.mSampleRate / 100 *
                                        N_BLOCKS_IO;
-@@ -2144,12 +2144,6 @@ int32_t AudioDeviceMac::HandleStreamFormatChange(
+@@ -2140,12 +2141,6 @@ int32_t AudioDeviceMac::HandleStreamFormatChange(
                                                &_captureConverter));
    } else {
      memcpy(&_outStreamFormat, &streamFormat, sizeof(streamFormat));
@@ -77,7 +76,7 @@ index 0a371737b3..eb6061a5d9 100644
      WEBRTC_CA_RETURN_ON_ERR(SetDesiredPlayoutFormat());
    }
    return 0;
-@@ -2262,7 +2256,7 @@ OSStatus AudioDeviceMac::implDeviceIOProc(const AudioBufferList* inputData,
+@@ -2258,7 +2253,7 @@ OSStatus AudioDeviceMac::implDeviceIOProc(const AudioBufferList* inputData,
        if (_twoDevices || (!_recording && !_playing)) {
          // In the case of a shared device, the single driving ioProc
          // is stopped here
@@ -86,7 +85,7 @@ index 0a371737b3..eb6061a5d9 100644
          WEBRTC_CA_LOG_WARN(
              AudioDeviceDestroyIOProcID(_outputDeviceID, _deviceIOProcID));
          if (err == noErr) {
-@@ -2353,7 +2347,7 @@ OSStatus AudioDeviceMac::implInDeviceIOProc(const AudioBufferList* inputData,
+@@ -2349,7 +2344,7 @@ OSStatus AudioDeviceMac::implInDeviceIOProc(const AudioBufferList* inputData,
      MutexLock lock(&mutex_);
      if (_doStopRec) {
        // This will be signalled only when a shared device is not in use.

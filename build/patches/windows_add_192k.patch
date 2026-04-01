@@ -1,8 +1,8 @@
 diff --git a/modules/audio_device/win/audio_device_core_win.cc b/modules/audio_device/win/audio_device_core_win.cc
-index f1cc0474fc..2aacd1d309 100644
+index f21f7aae6f..e690789d9b 100644
 --- a/modules/audio_device/win/audio_device_core_win.cc
 +++ b/modules/audio_device/win/audio_device_core_win.cc
-@@ -1845,8 +1845,8 @@ int32_t AudioDeviceWindowsCore::InitPlayout() {
+@@ -1832,8 +1832,8 @@ int32_t AudioDeviceWindowsCore::InitPlayout() {
  
    HRESULT hr = S_OK;
    WAVEFORMATEX* pWfxOut = NULL;
@@ -13,7 +13,7 @@ index f1cc0474fc..2aacd1d309 100644
  
    // Create COM object with IAudioClient interface.
    SAFE_RELEASE(_ptrClientOut);
-@@ -1877,11 +1877,14 @@ int32_t AudioDeviceWindowsCore::InitPlayout() {
+@@ -1863,11 +1863,14 @@ int32_t AudioDeviceWindowsCore::InitPlayout() {
    }
  
    // Set wave format
@@ -32,7 +32,7 @@ index f1cc0474fc..2aacd1d309 100644
    hr = S_FALSE;
  
    // Iterate over frequencies and channels, in order of priority
-@@ -1889,30 +1892,38 @@ int32_t AudioDeviceWindowsCore::InitPlayout() {
+@@ -1875,30 +1878,38 @@ int32_t AudioDeviceWindowsCore::InitPlayout() {
      for (unsigned int chan = 0; chan < sizeof(_playChannelsPrioList) /
                                             sizeof(_playChannelsPrioList[0]);
           chan++) {
@@ -85,7 +85,7 @@ index f1cc0474fc..2aacd1d309 100644
                             << " is not supported. No closest match.";
          }
        }
-@@ -1924,26 +1935,42 @@ int32_t AudioDeviceWindowsCore::InitPlayout() {
+@@ -1910,25 +1921,41 @@ int32_t AudioDeviceWindowsCore::InitPlayout() {
    // TODO(andrew): what happens in the event of failure in the above loop?
    //   Is _ptrClientOut->Initialize expected to fail?
    //   Same in InitRecording().
@@ -121,17 +121,16 @@ index f1cc0474fc..2aacd1d309 100644
 +    _playChannels = Wfx.Format.nChannels;
  
      RTC_LOG(LS_VERBOSE) << "VoE selected this rendering format:";
-     RTC_LOG(LS_VERBOSE) << "wFormatTag         : 0x"
--                        << webrtc::ToHex(Wfx.wFormatTag) << " ("
--                        << Wfx.wFormatTag << ")";
+-    RTC_LOG(LS_VERBOSE) << "wFormatTag         : 0x" << ToHex(Wfx.wFormatTag)
+-                        << " (" << Wfx.wFormatTag << ")";
 -    RTC_LOG(LS_VERBOSE) << "nChannels          : " << Wfx.nChannels;
 -    RTC_LOG(LS_VERBOSE) << "nSamplesPerSec     : " << Wfx.nSamplesPerSec;
 -    RTC_LOG(LS_VERBOSE) << "nAvgBytesPerSec    : " << Wfx.nAvgBytesPerSec;
 -    RTC_LOG(LS_VERBOSE) << "nBlockAlign        : " << Wfx.nBlockAlign;
 -    RTC_LOG(LS_VERBOSE) << "wBitsPerSample     : " << Wfx.wBitsPerSample;
 -    RTC_LOG(LS_VERBOSE) << "cbSize             : " << Wfx.cbSize;
-+                        << webrtc::ToHex(Wfx.Format.wFormatTag) << " ("
-+                        << Wfx.Format.wFormatTag << ")";
++    RTC_LOG(LS_VERBOSE) << "wFormatTag         : 0x" << ToHex(Wfx.Format.wFormatTag)
++                        << " (" << Wfx.Format.wFormatTag << ")";
 +    RTC_LOG(LS_VERBOSE) << "nChannels          : " << Wfx.Format.nChannels;
 +    RTC_LOG(LS_VERBOSE) << "nSamplesPerSec     : " << Wfx.Format.nSamplesPerSec;
 +    RTC_LOG(LS_VERBOSE) << "nAvgBytesPerSec    : "
@@ -142,7 +141,7 @@ index f1cc0474fc..2aacd1d309 100644
      RTC_LOG(LS_VERBOSE) << "Additional settings:";
      RTC_LOG(LS_VERBOSE) << "_playAudioFrameSize: " << _playAudioFrameSize;
      RTC_LOG(LS_VERBOSE) << "_playBlockSize     : " << _playBlockSize;
-@@ -1980,12 +2007,12 @@ int32_t AudioDeviceWindowsCore::InitPlayout() {
+@@ -1965,12 +1992,12 @@ int32_t AudioDeviceWindowsCore::InitPlayout() {
    }
    hr = _ptrClientOut->Initialize(
        AUDCLNT_SHAREMODE_SHARED,  // share Audio Engine with other applications
@@ -158,7 +157,7 @@ index f1cc0474fc..2aacd1d309 100644
        NULL);              // session GUID
  
    if (FAILED(hr)) {
-@@ -2016,11 +2043,6 @@ int32_t AudioDeviceWindowsCore::InitPlayout() {
+@@ -2001,11 +2028,6 @@ int32_t AudioDeviceWindowsCore::InitPlayout() {
                          << bufferFrameCount * _playAudioFrameSize << " bytes)";
    }
  
@@ -170,7 +169,7 @@ index f1cc0474fc..2aacd1d309 100644
    // Get an IAudioRenderClient interface.
    SAFE_RELEASE(_ptrRenderClient);
    hr = _ptrClientOut->GetService(__uuidof(IAudioRenderClient),
-@@ -2031,7 +2053,7 @@ int32_t AudioDeviceWindowsCore::InitPlayout() {
+@@ -2016,7 +2038,7 @@ int32_t AudioDeviceWindowsCore::InitPlayout() {
    _playIsInitialized = true;
  
    CoTaskMemFree(pWfxOut);
@@ -179,7 +178,7 @@ index f1cc0474fc..2aacd1d309 100644
  
    RTC_LOG(LS_VERBOSE) << "render side is now initialized";
    return 0;
-@@ -2039,7 +2061,7 @@ int32_t AudioDeviceWindowsCore::InitPlayout() {
+@@ -2024,7 +2046,7 @@ int32_t AudioDeviceWindowsCore::InitPlayout() {
  Exit:
    _TraceCOMError(hr);
    CoTaskMemFree(pWfxOut);
@@ -188,7 +187,7 @@ index f1cc0474fc..2aacd1d309 100644
    SAFE_RELEASE(_ptrClientOut);
    SAFE_RELEASE(_ptrRenderClient);
    return -1;
-@@ -2163,7 +2185,7 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
+@@ -2148,7 +2170,7 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
    HRESULT hr = S_OK;
    WAVEFORMATEX* pWfxIn = NULL;
    WAVEFORMATEXTENSIBLE Wfx = WAVEFORMATEXTENSIBLE();
@@ -197,7 +196,7 @@ index f1cc0474fc..2aacd1d309 100644
  
    // Create COM object with IAudioClient interface.
    SAFE_RELEASE(_ptrClientIn);
-@@ -2201,7 +2223,7 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
+@@ -2185,7 +2207,7 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
    Wfx.Samples.wValidBitsPerSample = Wfx.Format.wBitsPerSample;
    Wfx.SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
  
@@ -206,7 +205,7 @@ index f1cc0474fc..2aacd1d309 100644
    hr = S_FALSE;
  
    // Iterate over frequencies and channels, in order of priority
-@@ -2218,8 +2240,10 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
+@@ -2202,8 +2224,10 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
        // If the method succeeds and the audio endpoint device supports the
        // specified stream format, it returns S_OK. If the method succeeds and
        // provides a closest match to the specified format, it returns S_FALSE.
@@ -219,7 +218,7 @@ index f1cc0474fc..2aacd1d309 100644
        if (hr == S_OK) {
          break;
        } else {
-@@ -2228,10 +2252,14 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
+@@ -2212,10 +2236,14 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
                             << ", nSamplesPerSec=" << Wfx.Format.nSamplesPerSec
                             << " is not supported. Closest match: "
                                "nChannels="
@@ -238,7 +237,7 @@ index f1cc0474fc..2aacd1d309 100644
          } else {
            RTC_LOG(LS_INFO) << "nChannels=" << Wfx.Format.nChannels
                             << ", nSamplesPerSec=" << Wfx.Format.nSamplesPerSec
-@@ -2242,7 +2270,20 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
+@@ -2226,7 +2254,20 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
      if (hr == S_OK)
        break;
    }
@@ -260,7 +259,7 @@ index f1cc0474fc..2aacd1d309 100644
    if (hr == S_OK) {
      _recAudioFrameSize = Wfx.Format.nBlockAlign;
      _recSampleRate = Wfx.Format.nSamplesPerSec;
-@@ -2270,6 +2311,8 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
+@@ -2254,6 +2295,8 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
        AUDCLNT_SHAREMODE_SHARED,  // share Audio Engine with other applications
        AUDCLNT_STREAMFLAGS_EVENTCALLBACK |  // processing of the audio buffer by
                                             // the client will be event driven
@@ -269,7 +268,7 @@ index f1cc0474fc..2aacd1d309 100644
            AUDCLNT_STREAMFLAGS_NOPERSIST,   // volume and mute settings for an
                                             // audio session will not persist
                                             // across system restarts
-@@ -2321,7 +2364,7 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
+@@ -2305,7 +2348,7 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
    _recIsInitialized = true;
  
    CoTaskMemFree(pWfxIn);
@@ -278,7 +277,7 @@ index f1cc0474fc..2aacd1d309 100644
  
    RTC_LOG(LS_VERBOSE) << "capture side is now initialized";
    return 0;
-@@ -2329,7 +2372,7 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
+@@ -2313,7 +2356,7 @@ int32_t AudioDeviceWindowsCore::InitRecording() {
  Exit:
    _TraceCOMError(hr);
    CoTaskMemFree(pWfxIn);
@@ -287,7 +286,7 @@ index f1cc0474fc..2aacd1d309 100644
    SAFE_RELEASE(_ptrClientIn);
    SAFE_RELEASE(_ptrCaptureClient);
    return -1;
-@@ -2661,7 +2704,6 @@ DWORD WINAPI AudioDeviceWindowsCore::WSAPICaptureThreadPollDMO(LPVOID context) {
+@@ -2645,7 +2688,6 @@ DWORD WINAPI AudioDeviceWindowsCore::WSAPICaptureThreadPollDMO(LPVOID context) {
  
  DWORD AudioDeviceWindowsCore::DoRenderThread() {
    bool keepPlaying = true;
@@ -295,7 +294,7 @@ index f1cc0474fc..2aacd1d309 100644
    HRESULT hr = S_OK;
    HANDLE hMmTask = NULL;
  
-@@ -2777,20 +2819,16 @@ DWORD AudioDeviceWindowsCore::DoRenderThread() {
+@@ -2761,20 +2803,16 @@ DWORD AudioDeviceWindowsCore::DoRenderThread() {
    // >> ------------------ THREAD LOOP ------------------
  
    while (keepPlaying) {
