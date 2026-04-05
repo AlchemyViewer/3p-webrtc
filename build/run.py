@@ -384,7 +384,7 @@ def get_webrtc(source_dir, patch_dir, version, target,
                 cmd(['git', 'branch'])
                 cmd(['git', 'checkout', '-f', version])
             cmd(['git', 'clean', '-df'])
-            cmd(['gclient', 'sync', '-D', '--force', '--reset', '--revision', version, '--no-history', '--jobs=8'])
+            cmd(['gclient', 'sync', '-D', '--force', '--reset', '--revision', version, '--no-history', '--jobs={}'.format(os.cpu_count())])
             for patch in PATCHES[target]:
                 depth, dirs = PATCH_INFO.get(patch, (1, ['.']))
                 dir = os.path.join(src_dir, *dirs)
@@ -477,15 +477,15 @@ def init_rootfs(sysroot: str, config: MultistrapConfig, force=False):
 
 COMMON_GN_ARGS = [
     'rtc_include_internal_audio_device=true',
-    "rtc_use_h264=false",
-    "is_component_build=false",
+    'rtc_use_h264=false',
+    'rtc_use_h265=false',
+    'is_component_build=false',
     'rtc_build_examples=false',
-    "use_rtti=true",
+    'use_rtti=true',
     'rtc_build_tools=false',
-    "rtc_enable_protobuf=false",
-    "rtc_use_perfetto=false",
-    "rtc_use_absl_mutex=false",
-    "treat_warnings_as_errors=false",
+    'rtc_enable_protobuf=false',
+    'rtc_use_absl_mutex=false',
+    'treat_warnings_as_errors=false',
 ]
 
 WEBRTC_BUILD_TARGETS_MACOS_COMMON = [
@@ -774,12 +774,13 @@ def build_webrtc(
             gn_args += [
                 'target_os="win"',
                 f'target_cpu="{target_cpus[target]}"',
-                "use_custom_libcxx=false",
-                "use_custom_libcxx_for_host=false",
-                "is_clang=true",
+                'use_custom_libcxx=false',
+                'use_custom_libcxx_for_host=false',
+                'is_clang=true',
                 'clang_use_chrome_plugins=false',
                 'use_lld=false',
                 'use_thin_lto=false',
+                f'rtc_enable_avx2={"false" if target == "windows_arm64" else "true"}',
             ]
         elif target in ('macos_x86_64', 'macos_arm64'):
             gn_args += [
@@ -826,14 +827,15 @@ def build_webrtc(
                 'target_os="linux"',
                 'rtc_use_pipewire=false',
                 'rtc_use_x11=false',
-                "use_custom_libcxx=false",
-                "use_custom_libcxx_for_host=false",
+                'use_custom_libcxx=false',
+                'use_custom_libcxx_for_host=false',
                 'is_clang=false',
                 'clang_use_chrome_plugins=false',
                 'use_lld=false',
                 'use_thin_lto=false',
                 'rtc_include_pulse_audio=true',
                 'rtc_include_internal_audio_device=true',
+                'rtc_enable_avx2=true',
             ]
         else:
             raise Exception(f'Target {target} is not supported')
