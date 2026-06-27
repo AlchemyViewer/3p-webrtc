@@ -192,7 +192,7 @@ PATCHES = {
         'disable_mute_of_audio_processing.patch',
         'crash_on_fatal_error.patch',
         'windows_add_192k.patch',
-        'windows_dynamic_crt.patch',
+        # 'windows_dynamic_crt.patch',
     ],
     'windows_x86': [
         'add_license_dav1d.patch',
@@ -204,7 +204,7 @@ PATCHES = {
         'disable_mute_of_audio_processing.patch',
         'crash_on_fatal_error.patch',
         'windows_add_192k.patch',
-        'windows_dynamic_crt.patch',
+        # 'windows_dynamic_crt.patch',
     ],
     'windows_arm64': [
         'add_license_dav1d.patch',
@@ -216,7 +216,7 @@ PATCHES = {
         'disable_mute_of_audio_processing.patch',
         'crash_on_fatal_error.patch',
         'windows_add_192k.patch',
-        'windows_dynamic_crt.patch',
+        # 'windows_dynamic_crt.patch',
     ],
     'macos_x86_64': [
         'add_license_dav1d.patch',
