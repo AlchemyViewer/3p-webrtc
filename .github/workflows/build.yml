@@ -22,7 +22,7 @@ jobs:
           # - windows_x86
     runs-on: windows-2022
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - uses: actions/setup-python@v6
       with:
         python-version: '3.14'
@@ -61,7 +61,7 @@ jobs:
           # - ios
     runs-on: macos-26
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Select Xcode 26.3
       run: sudo xcode-select --switch /Applications/Xcode_26.3.app/Contents/Developer
     - run: brew install ninja
@@ -96,7 +96,7 @@ jobs:
           # - android_prefixed
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Disk Cleanup
       run: |
         df -h

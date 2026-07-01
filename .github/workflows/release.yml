@@ -20,7 +20,7 @@ jobs:
     outputs:
       output-artifact-id: ${{ steps.artifact-upload-step.outputs.artifact-id }}
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - uses: actions/setup-python@v6
       with:
         python-version: '3.14'
@@ -70,7 +70,7 @@ jobs:
     outputs:
       output-artifact-id: ${{ steps.artifact-upload-step.outputs.artifact-id }}
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Select Xcode 26.3
       run: sudo xcode-select --switch /Applications/Xcode_26.3.app/Contents/Developer
     - run: brew install ninja
@@ -115,7 +115,7 @@ jobs:
     outputs:
       output-artifact-id: ${{ steps.artifact-upload-step.outputs.artifact-id }}
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Disk Cleanup
       run: |
         df -h
@@ -152,7 +152,7 @@ jobs:
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/m')
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - uses: actions/download-artifact@v8
       with:
         path: artifacts
