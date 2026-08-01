@@ -23,7 +23,7 @@ jobs:
     runs-on: windows-2022
     steps:
     - uses: actions/checkout@v6
-    - uses: actions/setup-python@v6
+    - uses: actions/setup-python@v7
       with:
         python-version: '3.14'
     - run: pip install setuptools
@@ -65,7 +65,7 @@ jobs:
     - name: Select Xcode 26.3
       run: sudo xcode-select --switch /Applications/Xcode_26.3.app/Contents/Developer
     - run: brew install ninja
-    - uses: actions/setup-python@v6
+    - uses: actions/setup-python@v7
       with:
         python-version: '3.14'
     - run: pip install setuptools
@@ -107,7 +107,7 @@ jobs:
         # 17GB
         sudo rm -rf /usr/share/dotnet
         df -h
-    - uses: actions/setup-python@v6
+    - uses: actions/setup-python@v7
       with:
         python-version: '3.14'
     - run: pip install setuptools
